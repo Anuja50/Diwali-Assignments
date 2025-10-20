@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Registration - Form Validation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    form {
+      background: #fff;
+      padding: 22px 26px;
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      width: 380px;
+    }
+    h2 { text-align: center; margin: 6px 0 18px; color:#222; }
+    label { display:block; font-weight:600; margin-top:10px; }
+    input[type="text"], input[type="password"], input[type="email"] {
+      width:100%; padding:8px 10px; margin-top:6px; border-radius:5px;
+      border:1px solid #cbd5e1; box-sizing: border-box;
+    }
+    .error { color: #d32f2f; font-size: 13px; display:block; margin-top:6px; min-height:16px; }
+    button {
+      margin-top: 16px;
+      width:100%; padding:10px; border:none; border-radius:6px;
+      background:#1d4ed8; color:white; font-weight:700; cursor:pointer;
+    }
+    button:hover { background:#1e40af; }
+    .success { color: #0b8a2e; font-weight:700; text-align:center; margin-top:12px; }
+  </style>
+</head>
+<body>
+  <form id="registerForm" action="submit.php" method="post" onsubmit="return validateForm()">
+    <h2>User Registration</h2>
+
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" name="fname" />
+    <span class="error" id="fnameError"></span>
+
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" name="lname" />
+    <span class="error" id="lnameError"></span>
+
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" />
+    <span class="error" id="emailError"></span>
+
+    <label for="userid">User ID</label>
+    <input type="text" id="userid" name="userid" />
+    <span class="error" id="useridError"></span>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" />
+    <span class="error" id="passwordError"></span>
+
+    <label for="confirmPassword">Confirm Password</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" />
+    <span class="error" id="confirmPasswordError"></span>
+
+    <button type="submit">Register</button>
+
+    <div id="resultMessage" class="success" style="display:none;"></div>
+  </form>
+
+  <script>
+    function validateForm() {
+      // Reset errors
+      document.querySelectorAll('.error').forEach(e => e.innerText = '');
+      document.getElementById('resultMessage').style.display = 'none';
+
+      let isValid = true;
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const userid = document.getElementById('userid').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!fname) {
+        document.getElementById('fnameError').innerText = 'First name is required';
+        isValid = false;
+      }
+      if (!lname) {
+        document.getElementById('lnameError').innerText = 'Last name is required';
+        isValid = false;
+      }
+
+      // Email regex (basic but practical)
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+      if (!email) {
+        document.getElementById('emailError').innerText = 'Email is required';
+        isValid = false;
+      } else if (!emailPattern.test(email)) {
+        document.getElementById('emailError').innerText = 'Invalid email format';
+        isValid = false;
+      }
+
+      if (!userid) {
+        document.getElementById('useridError').innerText = 'User ID is required';
+        isValid = false;
+      }
+
+      if (!password) {
+        document.getElementById('passwordError').innerText = 'Password is required';
+        isValid = false;
+      } else if (password.length < 6) {
+        document.getElementById('passwordError').innerText = 'Password must be at least 6 characters';
+        isValid = false;
+      }
+
+      if (!confirmPassword) {
+        document.getElementById('confirmPasswordError').innerText = 'Please confirm your password';
+        isValid = false;
+      } else if (password !== confirmPassword) {
+        document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
+        isValid = false;
+      }
+
+      // If you want to block the real submission for testing, return false here.
+      // But when using submit.php and a real server, return true to allow submission.
+      if (!isValid) {
+        return false; // keep user on form until fixed
+      }
+
+      // If valid: show a quick success message for demo, then allow submission
+      // Option A: show message and prevent server submission (for demo):
+      // document.getElementById('resultMessage').innerText = 'Form validated — would submit to server';
+      // document.getElementById('resultMessage').style.display = 'block';
+      // return false;
+
+      // Option B: allow actual submission (server receives data). Use this in practicals:
+      return true;
+    }
+  </script>
+</body>
+</html>
